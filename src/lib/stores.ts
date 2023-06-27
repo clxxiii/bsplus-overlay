@@ -47,14 +47,14 @@ handshake.subscribe(async (data) => {
 	if (!data) return;
 	const userId = data.playerPlatformId;
 	const userReq = await fetch(`/?/getScoreSaberUser`, {
-		'method': "POST",
+		method: 'POST',
 		body: JSON.stringify({
 			id: userId
 		})
-	})
+	});
 	const userJson = await userReq.json();
 
 	// Thank svelte form actions for making this a nightmare
-	const user: FullPlayer = JSON.parse(JSON.parse(userJson.data)[0])
+	const user: FullPlayer = JSON.parse(JSON.parse(userJson.data)[0]);
 	scoreSaberUser.set(user);
-})
+});
