@@ -16,27 +16,27 @@
 	</div>
 	<div class="meta">
 		<div class="name-flag">
-			<div class="name">{$scoreSaberUser?.name}</div>
+			<div class="name">{$scoreSaberUser?.name ?? 'username'}</div>
 			<div class="flag">
-				<Flag country={$scoreSaberUser?.country} width={24} />
+				<Flag country={$scoreSaberUser?.country ?? 'US'} width={24} />
 			</div>
 		</div>
 		<div class="stats">
 			<div class="accuracy">
-				{$scoreSaberUser?.scoreStats?.averageRankedAccuracy?.toFixed(2)}% AVG
+				{$scoreSaberUser?.scoreStats?.averageRankedAccuracy?.toFixed(2) ?? '0.00'}% AVG
 			</div>
 
 			<div class="accuracy">
-				{$scoreSaberUser?.scoreStats?.totalScore.toLocaleString()} SCORE
+				{$scoreSaberUser?.scoreStats?.totalScore.toLocaleString() ?? '1,000,000'} SCORE
 			</div>
 		</div>
 		<div class="ranks">
 			<div class="rank">
-				#{$scoreSaberUser?.rank?.toLocaleString()}
+				#{$scoreSaberUser?.rank?.toLocaleString() ?? '0'}
 			</div>
 
 			<div class="pp">
-				{$scoreSaberUser?.pp?.toLocaleString()} PP
+				{$scoreSaberUser?.pp?.toLocaleString() ?? '0'} PP
 			</div>
 		</div>
 	</div>
