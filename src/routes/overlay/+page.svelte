@@ -16,6 +16,7 @@
 
 	let beatleader = false;
 	let scoresaber = false;
+	let rotateDelay = 10;
 
 	const toggle = () => {
 		if (scoresaber) {
@@ -30,7 +31,7 @@
 	if (data.params.leaderboard == 'beatleader') beatleader = true;
 	if (data.params.leaderboard == 'scoresaber') scoresaber = true;
 	if (data.params.leaderboard == 'both') {
-		setInterval(toggle, 5 * 1000);
+		setInterval(toggle, rotateDelay * 1000);
 		scoresaber = true;
 	}
 </script>
