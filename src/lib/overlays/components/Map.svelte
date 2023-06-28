@@ -96,4 +96,14 @@
 	.bpm {
 		margin: 0 8px;
 	}
+
+	.difficulty,
+	.bpm {
+		display: inline-block;
+
+		font-size: 10px;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 3px;
+	}
 </style>

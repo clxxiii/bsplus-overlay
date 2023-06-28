@@ -9,8 +9,10 @@ import {
 	isMapInfoEvent,
 	isScoreEvent
 } from './types';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import type { FullPlayer } from 'scoresaber.js';
+import type { BeatLeaderPlayer } from './BeatleaderPlayer';
+import type { Params } from './params';
 
 const ws = new ReconnectingWebSocket('ws://localhost:2947/socket');
 
@@ -20,6 +22,8 @@ export const paused = writable<boolean>();
 export const map = writable<MapInfoChanged>();
 export const score = writable<ScoreEvent>();
 export const scoreSaberUser = writable<FullPlayer>();
+export const beatLeaderUser = writable<BeatLeaderPlayer>();
+export const params = writable<Params>();
 
 ws.onmessage = (event) => {
 	const data = createEventObject(JSON.parse(event.data));
@@ -45,11 +49,38 @@ ws.onmessage = (event) => {
 
 handshake.subscribe(async (data) => {
 	if (!data) return;
-	const userId = data.playerPlatformId;
+	const p = get(params)
+
+	if (!p.scoresaber_id && (p.leaderboard == 'both' || p.leaderboard == 'scoresaber')) updateScoreSaber(data.playerPlatformId)
+	if (!p.beatleader_id && (p.leaderboard == 'both' || p.leaderboard == 'beatleader')) updateBeatLeader(data.playerPlatformId)
+});
+
+params.subscribe(async (params) => {
+	if (!params) return;
+
+	if (params.scoresaber_id && (params.leaderboard == 'both' || params.leaderboard == 'scoresaber')) updateScoreSaber(params.scoresaber_id)
+	if (params.beatleader_id && (params.leaderboard == 'both' || params.leaderboard == 'beatleader')) updateBeatLeader(params.beatleader_id)
+});
+
+const updateBeatLeader = async (id: string) => {
+	const userReq = await fetch(`/?/getBeatLeaderUser`, {
+		method: 'POST',
+		body: JSON.stringify({
+			id: id
+		})
+	});
+	const userJson = await userReq.json();
+
+	// Thank svelte form actions for making this a nightmare
+	const user: BeatLeaderPlayer = JSON.parse(JSON.parse(userJson.data)[0]);
+	beatLeaderUser.set(user);
+}
+
+const updateScoreSaber = async (id: string) => {
 	const userReq = await fetch(`/?/getScoreSaberUser`, {
 		method: 'POST',
 		body: JSON.stringify({
-			id: userId
+			id: id
 		})
 	});
 	const userJson = await userReq.json();
@@ -57,4 +88,4 @@ handshake.subscribe(async (data) => {
 	// Thank svelte form actions for making this a nightmare
 	const user: FullPlayer = JSON.parse(JSON.parse(userJson.data)[0]);
 	scoreSaberUser.set(user);
-});
+}
